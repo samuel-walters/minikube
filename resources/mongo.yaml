@@ -12,18 +12,19 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongo
+  name: mongo-service
 spec:
+  # (Only accessible inside the cluster)
+  type: ClusterIP
   selector:
     app: mongo
   ports:
     - port: 27017
-      targetPort: 27017
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongo
+  name: mongo-deployment
 spec:
   selector:
     matchLabels:
@@ -36,6 +37,8 @@ spec:
       containers:
         - name: mongo
           image: mongo:4.2.22
+          # (Specifying the port is informational as it is
+          # already exposed due to the service found above.)
           ports:
             - containerPort: 27017
           volumeMounts:

@@ -1,50 +1,59 @@
 apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mongo-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 256Mi
----
-apiVersion: v1
 kind: Service
 metadata:
-  name: mongo-service
+  name: mongo
+  labels:
+    name: mongo
 spec:
-  # (Only accessible inside the cluster)
-  type: ClusterIP
+  # This is a "headless" service.
+  clusterIP: None
   selector:
-    app: mongo
+    role: mongo
   ports:
     - port: 27017
+      targetPort: 27017
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: mongo-deployment
+  name: mongo
 spec:
+  serviceName: "mongo"
+  replicas: 3
   selector:
     matchLabels:
-      app: mongo
+      role: mongo
   template:
     metadata:
       labels:
-        app: mongo
+        role: mongo
+        environment: test
     spec:
+      terminationGracePeriodSeconds: 10
       containers:
-        - name: mongo
-          image: mongo:4.2.22
-          # (Specifying the port is informational as it is
-          # already exposed due to the service found above.)
-          ports:
-            - containerPort: 27017
-          volumeMounts:
-            - name: storage
-              mountPath: /data/db
-      volumes:
-        - name: storage
-          persistentVolumeClaim:
-            claimName: mongo-pvc
+      - name: mongo
+        image: mongo:4.2.22
+        command:
+          - mongod
+          - "--replSet"
+          - rs0
+          - "--bind_ip"
+          - "0.0.0.0"
+        ports:
+          - containerPort: 27017
+        volumeMounts:
+          - name: storage
+            mountPath: /data/db
+      - name: mongo-sidecar
+        image: cvallance/mongo-k8s-sidecar
+        env:
+          - name: MONGO_SIDECAR_POD_LABELS
+            value: "role=mongo,environment=test"
+  volumeClaimTemplates:
+  - metadata:
+      name: storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 256Mi

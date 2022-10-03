@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require('body-parser');
 
 mongoose.Promise = global.Promise;
-mongoose.connect("mongodb://mongo-0.mongo:27017/my-db");
+mongoose.connect("mongodb://mongo-0.mongo,mongo-1.mongo,mongo-2.mongo:27017/my-db");
 const nameSchema = new mongoose.Schema({
   userID: {
     type: Number,

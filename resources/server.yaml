@@ -4,7 +4,7 @@ metadata:
   name: user-app-service
 spec:
   # This is the default type, but it is put here as a reminder.
-  # Note: With type clusterIP, you can only access this service while inside the cluster.
+  # Note: With type ClusterIP, you can only access this service inside the cluster.
   type: ClusterIP
   selector:
     app: user-app

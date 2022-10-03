@@ -4,7 +4,7 @@ metadata:
   name: nginx-service
 spec:
   # NodePort allows access from outside the cluster.
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: nginx
   ports:
@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: samuelwalters/nginx-image:v1
+          image: samuelwalters/nginx-image:v3
           ports:
             - containerPort: 80
           imagePullPolicy: Always

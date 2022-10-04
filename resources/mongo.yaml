@@ -5,9 +5,11 @@ metadata:
 data:
   poststart.sh: |
     #!/bin/bash
-    if [ "$HOSTNAME" = "mongo-0" ]; then
-      sleep 30
-      mongo --eval 'rs.initiate( { _id : "rs0", members: [ { _id: 0, host: "mongo-0.mongo:27017", priority: 1 }, { _id: 1, host: "mongo-1.mongo:27017", priority: 0.5 }, { _id: 2, host: "mongo-2.mongo:27017", priority: 0.2 } ] })'
+    exec >logfile.txt 2>&1
+    if [ "$HOSTNAME" = "mongo-2" ]; then
+      sleep 45
+      mongo --eval 'rs.initiate( { _id : "rs0", members: [ { _id: 0, host: "mongo-0.mongo:27017", priority: 1 }, { _id: 1, host: "mongo-1.mongo:27017", priority: 0.5 }, { _id: 2, host: "mongo-2.mongo.default.svc.cluster.local:27017", priority: 0.2 } ] })'
+      echo "lol"
     fi
 ---
 apiVersion: v1
@@ -40,16 +42,15 @@ spec:
       labels:
         role: mongo
     spec:
-      terminationGracePeriodSeconds: 10
+      terminationGracePeriodSeconds: 20
       containers:
       - name: mongo
         image: mongo:4.2.22
         command:
           - mongod
-          - "--replSet"
-          - rs0
-          - "--bind_ip"
-          - "0.0.0.0"
+        args:
+          - "--replSet=rs0"
+          - "--bind_ip=0.0.0.0"
         ports:
           - containerPort: 27017
         volumeMounts:

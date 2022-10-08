@@ -6,10 +6,36 @@ data:
   poststart.sh: |
     #!/bin/bash
     exec >logfile.txt 2>&1
-    if [ "$HOSTNAME" = "mongo-2" ]; then
-      sleep 45
-      mongo --eval 'rs.initiate( { _id : "rs0", members: [ { _id: 0, host: "mongo-0.mongo:27017", priority: 1 }, { _id: 1, host: "mongo-1.mongo:27017", priority: 0.5 }, { _id: 2, host: "mongo-2.mongo.default.svc.cluster.local:27017", priority: 0.2 } ] })'
-      echo "lol"
+    host=${HOSTNAME}
+    echo "host: $host"
+    number=${HOSTNAME//[!0-9]/}
+    echo "NUMBER: $number"
+    sleep 3
+    if [ "$HOSTNAME" = "mongo-0" ]; then
+      mongo --eval "rs.initiate( { _id : 'rs0', members: [ { _id: 0, host: 'mongo-0.mongo.default.svc.cluster.local:27017', priority: 0.5 } ] })"
+    else
+      mongo --host "rs0/mongo-0.mongo,mongo-1.mongo,mongo-2.mongo,mongo-3.mongo" --eval "rs.add( { _id: "$number", host: '"$host".mongo:27017', priority: 0, votes: 0} )"
+      rs_status_code=$(mongo --quiet --eval 'rs.status().code')
+      counter=0
+      # https://www.mongodb.com/docs/manual/reference/method/rs.add/#mongodb-method-rs.add
+      # Maybe update mongo as a workaround
+      while [ "$rs_status_code" = "94" ]
+      do
+        echo "The counter is $counter"
+        ((counter++))
+        if [ "$counter" = "6" ]; then
+          break
+        fi
+        sleep 5
+        rs_status_code=$(mongo --quiet --eval 'rs.status().code')
+      done
+      if [ "$counter" != "6" ]; then
+        sleep 5
+        mongo --host "rs0/mongo-0.mongo,mongo-1.mongo,mongo-2.mongo,mongo-3.mongo" --eval "cfg = rs.conf(); cfg.members["$number"].priority = 0.5; cfg.members["$number"].votes = 1; rs.reconfig(cfg)"
+        echo "command would have been executed"
+        echo "rs $rs_status_code"
+      fi
+      echo "outside: $rs_status_code"
     fi
 ---
 apiVersion: v1

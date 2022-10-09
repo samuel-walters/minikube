@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:lts-alpine3.15
 WORKDIR /usr/src/server
 
 COPY package.json ./

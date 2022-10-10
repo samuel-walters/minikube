@@ -3,20 +3,22 @@
 <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
 <h1>User Details</h1>
 <body style="background-color:rgb(22, 21, 21)">
-<form method="post" action="/addname">
+<form>
     <label>User ID:</label><br>
-    <input type="text" name="userID" required><br>
+    <input type="text" name="userID" required id="userid"><br>
     <p></p>
     <label>First name:</label><br>
-    <input type="text" name="firstName" required><br>
+    <input type="text" name="firstName" required id="first"><br>
     <p></p>
     <label>Last name:</label><br>
-    <input type="text" name="lastName" required><br>
+    <input type="text" name="lastName" required id="last"><br>
     <p></p>
     <label>Age:</label><br>
-    <input type="text" name="age" required><br>
+    <input type="text" name="age" required id="age"><br>
     <p></p>
-    <input type="submit" value="Submit" style="padding: 5px; color: rgb(24, 19, 19)">
-  </form>
+    <button id="get-button" style="padding: 5px; color: rgb(24, 19, 19)">Submit</button>
+</form>
+<script src="jquery.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

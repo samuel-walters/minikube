@@ -31,46 +31,54 @@ app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
 app.set("view engine", "ejs");
 
-// post
 app.post("/addname", async (req, res) => {
-  const insertedData = req.body;
+  const userID = req.body.UserID.trim();
+  const firstName = req.body.firstName.trim();
+  const lastName = req.body.lastName.trim();
+  const age = req.body.age.trim();
   const checkNumber = /^\d+$/;
   const checkString = /^[A-Za-z]+$/;
-  const age = insertedData.age;
-  if (checkString.test(insertedData.firstName) && checkString.test(insertedData.lastName)) {
-    if (age != null && age >= 18 && age <= 100 && checkNumber.test(age)) {
-        if (checkNumber.test(insertedData.userID)) {
-            const doc = {
-                UserID: insertedData.userID,
-                firstName: insertedData.firstName,
-                lastName: insertedData.lastName,
-                age: insertedData.age
-            }
-            let errorOccurred = 0;
-            await main(doc, "post").then(console.log).catch(error => errorOccurred = 1).finally(() => client.close());
-            if (errorOccurred == 0) {
-              res.render("successful.ejs");
-            } else {
-              res.render("error.ejs");
-            }
+  if (checkString.test(firstName) && checkString.test(lastName)) {
+    if (checkNumber.test(age) && age != null) {
+      if (age >= 18 && age <= 100) {
+        if (checkNumber.test(userID)) {
+          const doc = {
+            UserID: userID,
+            firstName: firstName,
+            lastName: lastName,
+            age: age
+          }
+          let errorOccurred = 0;
+          await main(doc, "post").then(console.log).catch(error => errorOccurred = 1).finally(() => client.close());
+          if (errorOccurred == 0) {
+            res.send("Success!");
+          } else {
+            res.send("Failed to add user to the database. Perhaps check if the User ID is unique.");
+          }
         } else {
-            res.render("invalid_id.ejs");
+          res.send("UserIDs must only contain digits.");
         }
+      } else {
+          res.send("The user must be older than 17 and younger than 101.");
+      } 
     } else {
-        res.render("invalid_age.ejs");
+      res.send("Make sure you only use numbers for age.")
     }
   } else {
-    res.render("invalid_name.ejs");
+    res.send("Make sure you use only letters for names.");
   }
 });
 
 // Get
+app.get("/successful", (req, res) => {
+  res.render("successful.ejs")
+});
+
 app.get("/users", async (req, res) => {
   const readData = await main({}, "get");
   res.render("list.ejs", {userList: readData})
 });
 
-// Delete
 app.get("/delete", async (req, res) => {
   res.render("delete.ejs");
   var stringed = JSON.stringify(req.query, null, 2);

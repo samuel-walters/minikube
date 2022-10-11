@@ -2,7 +2,7 @@ const express = require('express');
 const { MongoClient } = require('mongodb');
 const bodyParser = require('body-parser');
 
-const client = new MongoClient("mongodb://mongo-0.mongo,mongo-1.mongo,mongo-2.mongo,mongo-3.mongo,mongo-4.mongo,mongo-5.mongo,mongo-6.mongo:27017");
+const client = new MongoClient("mongodb://mongo-0.mongo,mongo-1.mongo,mongo-2.mongo,mongo-3.mongo,mongo-4.mongo,mongo-5.mongo,mongo-6.mongo:27017/?readPreference=primaryPreferred");
 
 async function main(doc, type, inputID) {
   // Use connect method to connect to the server

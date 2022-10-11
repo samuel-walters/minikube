@@ -11,11 +11,17 @@ data:
     number=${HOSTNAME//[!0-9]/}
     echo "NUMBER: $number"
     sleep 3
-    if [ "$HOSTNAME" = "mongo-0" ]; then
-      mongosh --eval "rs.initiate( { _id : 'rs0', members: [ { _id: 0, host: 'mongo-0.mongo.default.svc.cluster.local:27017', priority: 0.5 } ] })"
-    else
-      mongosh --host "rs0/mongo-0.mongo,mongo-1.mongo,mongo-2.mongo,mongo-3.mongo" --eval "rs.add( { _id: "$number", host: '"$host".mongo:27017', priority: 0.5, votes: 1} )"
+    rs_status_code=$(mongosh --quiet --eval 'rs.status()')
+    if [[ $rs_status_code = "" ]]; then
+      echo "inside"
+      if [ "$HOSTNAME" = "mongo-0" ]; then
+        mongosh --eval "rs.initiate( { _id : 'rs0', members: [ { _id: 0, host: 'mongo-0.mongo.default.svc.cluster.local:27017', priority: 0.5 } ] })"
+      else
+        mongosh --host "rs0/mongo-0.mongo,mongo-1.mongo,mongo-2.mongo,mongo-3.mongo" --eval "rs.add( { _id: "$number", host: '"$host".mongo:27017', priority: 0.5, votes: 1} )"
+      fi
     fi
+    echo "hi"
+    echo "eeeeeeeeee: $rs_status_code e"
 ---
 apiVersion: v1
 kind: Service

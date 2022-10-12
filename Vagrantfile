@@ -11,6 +11,7 @@ Vagrant.configure("2") do |config|
     # (ilionx/ubuntu2004-minikube comes with minikube (1.26.1) installed -
     # as well as docker (5:20.10.17~3-0~ubuntu-focal), 
     # kubectl (1.25.0-00), kubetail (1.6.15) and even helm (3.9.4).)
+    # Note: Minikube is set with vm-driver=none (it is running bare-metal).
     config.vm.box = "ilionx/ubuntu2004-minikube"
 
     # Latest version of the ilionx/ubuntu2004-minikube box at the moment.

@@ -46,5 +46,5 @@ Vagrant.configure("2") do |config|
     # (Type "rsync" does a one-time one-way sync from the host to the VM.)
     # (node_modules gets excluded because otherwise "npm install" causes installation errors.)
     # (First parameter is host path, second is VM path.)
-    config.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: [".git/", ".gitignore", "/server/node_modules/", "Vagrantfile"]
+    config.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: [".git/", ".gitignore", "README.md", "/server/node_modules/", "Vagrantfile", "/documentation"]
 end

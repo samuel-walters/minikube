@@ -1,6 +1,6 @@
 # Using this Repository
 
-To use this repository, you will need to install Vagrant 2.3.0 (click [here](https://www.vagrantup.com/downloads)) and Virtualbox (click [here](https://www.virtualbox.org/)). Then clone the repository and run `vagrant up` in the folder which contains the `Vagrantfile`. If you encounter a problem with running `vagrant up` and you are using Windows OS, try [this potential solution](https://github.com/samuel-walters/docker-three-tier-architecture/blob/main/documentation/Blockers.md) which deals with the Hyper-V blocker.
+To use this repository, you will need to install Vagrant 2.3.0 (click [here](https://www.vagrantup.com/downloads)) and VirtualBox (click [here](https://www.virtualbox.org/)). Then clone this repository and run `vagrant up` in the folder which contains the `Vagrantfile`. If you encounter a problem with running `vagrant up` and you are using the Windows OS, try [this potential solution](https://github.com/samuel-walters/docker-three-tier-architecture/blob/main/documentation/Blockers.md) which deals with the Hyper-V blocker.
 
 # Project Overview Diagram
 ![image](./images/Minikube.png)

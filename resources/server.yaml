@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: user-app
-          image: samuelwalters/user-app:v13
+          image: samuelwalters/user-app:v14
           # Specifying the containerPort here is entirely informational.
           # This port is already exposed due to the service found above (user-app-service).
           ports:

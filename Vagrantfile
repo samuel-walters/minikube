@@ -26,7 +26,7 @@ Vagrant.configure("2") do |config|
     config.vm.network "private_network", ip: "192.168.50.4"
 
     # This message shows after "vagrant up".
-    config.vm.post_up_message = "Useful instructions here."
+    config.vm.post_up_message = "Pull the Mongo image before running 'kubectl apply'."
 
     # Configures settings specific to virtualbox
     config.vm.provider "virtualbox" do |v|
@@ -44,7 +44,6 @@ Vagrant.configure("2") do |config|
     
     # Allows folders on the host machine to be synced to the guest machine.
     # (Type "rsync" does a one-time one-way sync from the host to the VM.)
-    # (node_modules gets excluded because otherwise "npm install" causes installation errors.)
     # (First parameter is host path, second is VM path.)
     config.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: [".git/", ".gitignore", "README.md", "/server/node_modules/", "Vagrantfile", "/documentation"]
 end

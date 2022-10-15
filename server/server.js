@@ -2,7 +2,8 @@ const express = require('express');
 const { MongoClient } = require('mongodb');
 const bodyParser = require('body-parser');
 
-const client = new MongoClient("mongodb://mongo-0.mongo,mongo-1.mongo,mongo-2.mongo,mongo-3.mongo,mongo-4.mongo,mongo-5.mongo,mongo-6.mongo:27017/?readPreference=primaryPreferred");
+const client = new MongoClient("mongodb://mongo-0.mongo,mongo-1.mongo,mongo-2.mongo,mongo-3.mongo,mongo-4.mongo,"
+                             + "mongo-5.mongo,mongo-6.mongo:27017/?replicaSet=mySet&readPreference=primaryPreferred");
 
 async function main(doc, type, inputID) {
   // Use connect method to connect to the server
@@ -13,22 +14,22 @@ async function main(doc, type, inputID) {
   if (type === "post") {
     await collection.createIndex({ "UserID": 1 }, { unique: true })
     await collection.insertOne(doc);
-    console.log(`A document was inserted with the UserID: ${doc.UserID}`);
+    console.log("A document was inserted with the UserID: ${doc.UserID}");
   } else if (type === "get") {
     const findResult = await collection.find({}).toArray();
-    console.log('Found documents =>', findResult);
+    console.log("Found documents =>", findResult);
     return findResult;
   } else if (type === "delete") {
     const deleteResult = await collection.deleteOne({ UserID: inputID });
-    console.log('Deleted a document => ', deleteResult);
+    console.log("Deleted a document => ", deleteResult);
   }
-  return 'done.';
+  return "done.";
 }
 
 app = express()
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json());
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 
 app.post("/addname", async (req, res) => {
@@ -83,7 +84,7 @@ app.get("/delete", async (req, res) => {
   res.render("delete.ejs");
   var stringed = JSON.stringify(req.query, null, 2);
   var objectValue = JSON.parse(stringed);
-  var passedID = objectValue['id'];
+  var passedID = objectValue["id"];
   if (passedID === undefined) {
     console.log("passedID is undefined.");
   } else {

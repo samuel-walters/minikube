@@ -8,7 +8,7 @@ To use this repository, you will need to install Vagrant 2.3.0 (click [here](htt
 
 ## ClusterIP
 
-Exposes the Service on a cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster. The ClusterIP Service, which is Kubernetes's default ServiceType, therefore grants you the ability to pick and choose what someone can access from outside the cluster. For example, in this project, the Node.Js Pods can access the MongoDB pods because they exist in the same cluster. But someone can not directly access the MongoDB database if they are not inside the cluster. 
+Exposes the Service on a cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster. The ClusterIP Service, which is Kubernetes's default ServiceType, therefore grants you the ability to pick and choose what someone can access from outside the cluster. For example, in this project, the Nginx Pods can access the Node.Js pods because they exist in the same cluster. But someone can not directly access the Node.Js pods if they are not inside the cluster. 
 
 ## NodePort 
 

@@ -7,20 +7,19 @@ data:
     #!/bin/bash
     exec >logfile.txt 2>&1
     host=${HOSTNAME}
-    echo "host: $host"
     number=${HOSTNAME//[!0-9]/}
-    echo "NUMBER: $number"
     sleep 3
+    # The status code can help identify if the member is currently connected to the replicaset.
     rs_status_code=$(mongosh --quiet --eval 'rs.status()')
     if [[ $rs_status_code = "" ]]; then
-      echo "Inside first if statement"
       if [ "$HOSTNAME" = "mongo-0" ]; then
+        # Initiates the replicaset.
         mongosh --eval "rs.initiate( { _id : 'mySet', members: [ { _id: 0, host: 'mongo-0.mongo.default.svc.cluster.local:27017', priority: 0.5 } ] })"
       else
+        # Adds member to the replicaset.
         mongosh --host "mySet/mongo-0.mongo,mongo-1.mongo,mongo-2.mongo,mongo-3.mongo" --eval "rs.add( { _id: "$number", host: '"$host".mongo:27017', priority: 0.5, votes: 1} )"
       fi
     fi
-    echo "status code: $rs_status_code"
 ---
 apiVersion: v1
 kind: Service
